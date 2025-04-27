@@ -11,7 +11,27 @@ class Maze {
     this.#reset();
   }
 
-  #set(x, y, v) {
+  load(grid) {
+    const chars = grid.split('');
+    if (!Array.isArray(chars) || !chars.length) {
+      throw new Error('Invalid grid');
+    }
+    for (let i = 0; i < chars.length; i++) {
+      const y = Math.floor(i / this.w);
+      const x = i % this.w;
+      if (!this.#validate({ x, y })) {
+        continue;
+      }
+      this.#set({ x, y }, chars[i]);
+      if (chars[i] === ' ') {
+        this.entry.x = x;
+        this.entry.y = y;
+      }
+    }
+    return this;
+  }
+
+  #set({ x, y }, v) {
     if (x < 0 || x >= this.w || y < 0 || y >= this.h) {
       throw new Error(`Index[${x}, ${y}] out of bounds(${this.w}, ${this.h})`);
     }
@@ -92,7 +112,7 @@ class Maze {
     }
 
     this.entry = { x: entryX, y: entryY };
-    this.#set(entryX, entryY, ' ');
+    this.#set(this.entry, ' ');
     return this;
   }
 }

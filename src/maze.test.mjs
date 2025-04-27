@@ -54,3 +54,16 @@ import { maze } from './maze.mjs';
     assert.strictEqual(g.get({ x: expectX, y: expectY }), ' ');
   });
 });
+
+[
+  [{ w: 2, h: 2 }, '███ ', { x: 1, y: 1 }],
+  [{ w: 2, h: 2 }, '██ █', { x: 0, y: 1 }],
+  [{ w: 2, h: 2 }, '█ ██ ', { x: 1, y: 0 }],
+  [{ w: 2, h: 2 }, ' ███ ', { x: 0, y: 0 }],
+].forEach(([size, load, expectedEntry]) => {
+  test(`maze load [${size.w}, ${size.h}]:${load}`, () => {
+    const g = maze(size.w, size.h).load(load);
+    assert.strictEqual(g.entry.x, expectedEntry.x);
+    assert.strictEqual(g.entry.y, expectedEntry.y);
+  });
+});
