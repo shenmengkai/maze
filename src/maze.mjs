@@ -115,6 +115,14 @@ class Maze {
     this.#set(this.entry, ' ');
     return this;
   }
+
+  toString() {
+    return this.grid.map((row) => row.join('')).join('\n');
+  }
+
+  print(title = '') {
+    console.log((title ? `==${title}==\n` : '') + this.toString());
+  }
 }
 
 export const maze = (w, h) => new Maze(w, h);
