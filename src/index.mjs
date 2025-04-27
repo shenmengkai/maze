@@ -4,7 +4,7 @@ import { dfs } from './dfs.mjs'
 export const handler = async (event) => {
   const { width, height } = getSize(event);
   const m = maze(width, height);
-  dfs(m, m.randomInnerPoint());
+  dfs(m, m.center());
   const out = m.toString();
 
   const html = `

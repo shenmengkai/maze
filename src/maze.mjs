@@ -135,6 +135,12 @@ export class Maze {
     return { x, y };
   }
 
+  center() {
+    const x = Math.floor(this.w / 2);
+    const y = Math.floor(this.h / 2);
+    return { x, y };
+  }
+
   toString() {
     return this.grid.map((row) => row.join('')).join('\n');
   }

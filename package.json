@@ -7,6 +7,6 @@
     "prezip": "mkdir -p deploy",
     "zip": "find . -maxdepth 2 -name '*.mjs' ! -name '*.test.mjs' -exec zip -j deploy/function.zip {} package.json \\;",
     "predeploy": "npm run zip",
-    "deploy": "aws lambda update-function-code --function-name genMaze --zip-file fileb://deploy/function.zip"
+    "deploy": "aws lambda update-function-code --no-cli-pager --function-name genMaze --zip-file fileb://deploy/function.zip"
   }
 }
