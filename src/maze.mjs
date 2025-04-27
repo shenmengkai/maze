@@ -1,14 +1,23 @@
 const WALL = '█';
 
-class Maze {
+export class Maze {
   constructor(w, h) {
     this.w = w;
     this.h = h;
     this.entry = { x: 0, y: 0 };
+    this.exit = [];
     this.grid = Array.from({ length: h }, () =>
       Array.from({ length: w }, () => '')
     );
     this.#reset();
+  }
+
+  isWall(pos) {
+    return this.validate(pos) && this.get(pos) === WALL;
+  }
+
+  isVisited(pos) {
+    return this.validate(pos) && this.get(pos) === ' ';
   }
 
   load(grid) {
@@ -19,10 +28,10 @@ class Maze {
     for (let i = 0; i < chars.length; i++) {
       const y = Math.floor(i / this.w);
       const x = i % this.w;
-      if (!this.#validate({ x, y })) {
+      if (!this.validate({ x, y })) {
         continue;
       }
-      this.#set({ x, y }, chars[i]);
+      this.set({ x, y }, chars[i]);
       if (chars[i] === ' ') {
         this.entry.x = x;
         this.entry.y = y;
@@ -31,7 +40,7 @@ class Maze {
     return this;
   }
 
-  #set({ x, y }, v) {
+  set({ x, y }, v) {
     if (x < 0 || x >= this.w || y < 0 || y >= this.h) {
       throw new Error(`Index[${x}, ${y}] out of bounds(${this.w}, ${this.h})`);
     }
@@ -60,7 +69,7 @@ class Maze {
   }
 
   /** Determine it is inside the maze */
-  #validate({ x, y }, throwOrNot = false) {
+  validate({ x, y }, throwOrNot = false) {
     if (x < 0 || x >= this.w || y < 0 || y >= this.h) {
       if (throwOrNot) {
         throw new Error(`Index[${x}, ${y}] out of bounds(${this.w}, ${this.h})`);
@@ -70,8 +79,12 @@ class Maze {
     return true;
   }
 
+  isBorder({ x, y }) {
+    return x === 0 || x === this.w - 1 || y === 0 || y === this.h - 1;
+  }
+
   get(pos) {
-    this.#validate(pos, true);
+    this.validate(pos, true);
     return this.grid[pos.y][pos.x];
   }
 
@@ -112,8 +125,14 @@ class Maze {
     }
 
     this.entry = { x: entryX, y: entryY };
-    this.#set(this.entry, ' ');
+    this.set(this.entry, ' ');
     return this;
+  }
+
+  randomInnerPoint() {
+    const x = Math.floor(Math.random() * (this.w - 2)) + 1;
+    const y = Math.floor(Math.random() * (this.h - 2)) + 1;
+    return { x, y };
   }
 
   toString() {
