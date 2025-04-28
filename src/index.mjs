@@ -2,28 +2,25 @@ import { maze } from './maze.mjs'
 import { dfs } from './dfs.mjs'
 
 export const handler = async (event) => {
+  // CORS
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Methods": "OPTIONS,POST,GET"
+      },
+      body: ''
+    };
+  }
+
   const { width, height } = getSize(event);
   const m = maze(width, height);
   dfs(m, m.center());
-  const out = m.toString();
-
-  const html = `
-    <html>
-      <head>
-        <meta charset="UTF-8">
-      </head>
-      <body>
-        <h1>Generated Maze</h1>
-        <pre>${out}</pre>
-      </body>
-    </html>
-  `;
-
   return {
-    statusCode: 200,
-    headers: { "Content-Type": "text/html" },
-    body: html,
-  };
+    maze: m.getGrid(),
+  }
 }
 
 const getSize = (event) => {

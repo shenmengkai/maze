@@ -1,2 +1,6 @@
-deploy
-node_modules
+**/deploy
+**/node_modules
+**/dist
+**/coverage
+**/build
+**/dist.zip

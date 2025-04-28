@@ -5,6 +5,7 @@ const DIRECTIONS = [[1, 0], [0, 1], [-1, 0], [0, -1]];
 
 /**
  * @param {Maze} maze
+ * @param {{x,y}} start
  */
 export const dfs = (maze, start) => {
   const stack = [start];
