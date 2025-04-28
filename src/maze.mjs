@@ -12,6 +12,21 @@ export class Maze {
     this.#reset();
   }
 
+  isClosedBorder(pos) {
+    if (!this.validate(pos) || !this.isBorder(pos)) {
+      return false;
+    }
+    for (const { x, y } of this.exit) {
+      if ((x === 0 || x === this.w - 1) && pos.x === x) {
+        return false;
+      }
+      if ((y === 0 || y === this.h - 1) && pos.y === y) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   isWall(pos) {
     return this.validate(pos) && this.get(pos) === WALL;
   }

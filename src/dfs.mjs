@@ -15,7 +15,11 @@ export const dfs = (maze, start) => {
     const { x, y } = visited;
     const neighbors = newNeighbors(maze, x, y)
       .filter(({ neightbor }) => {
-        if (maze.exit.length < 2) return true;
+        if (maze.exit.length == 0) return true;
+        if (maze.exit.length == 1 && maze.isBorder(neightbor)) {
+          // prevent 2 exit at the same side
+          return maze.isClosedBorder(neightbor);
+        }
         return !maze.isBorder(neightbor);
       });
     if (!neighbors.length) {
