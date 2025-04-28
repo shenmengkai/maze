@@ -5,3 +5,10 @@ export const shffule = (arr) => {
   }
   return arr;
 };
+
+export const idgen = (length = 6) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  return Array.from({ length })
+    .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
+    .join('');
+}

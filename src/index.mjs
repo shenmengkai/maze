@@ -1,5 +1,7 @@
 import { maze } from './maze.mjs'
 import { dfs } from './dfs.mjs'
+import { redis } from './redis.mjs'
+import { idgen } from './algo.mjs'
 
 export const handler = async (event) => {
   // CORS
@@ -16,10 +18,24 @@ export const handler = async (event) => {
   }
 
   const { width, height } = getSize(event);
+  let id = getId(event);
+  if (id) {
+    const saved = await redis.get(id);
+    if (saved) {
+      return {
+        maze: JSON.parse(saved),
+        id,
+      }
+    }
+  }
+
   const m = maze(width, height);
   dfs(m, m.center());
+  id = idgen();
+  redis.set(id, JSON.stringify(m.getGrid()));
   return {
     maze: m.getGrid(),
+    id,
   }
 }
 
@@ -38,3 +54,5 @@ const getSize = (event) => {
     return size;
   }
 }
+
+const getId = (event) => event.queryStringParameters.id;
