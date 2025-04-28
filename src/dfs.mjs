@@ -9,7 +9,7 @@ const DIRECTIONS = [[1, 0], [0, 1], [-1, 0], [0, -1]];
  */
 export const dfs = (maze, start) => {
   const stack = [start];
-  maze.set(stack[0], ' ');
+  maze.setRoad(stack[0]);
   while (stack.length) {
     const visited = stack.at(-1);
     const { x, y } = visited;
@@ -30,9 +30,10 @@ export const dfs = (maze, start) => {
 
     if (maze.isBorder(neightbor)) {
       maze.exit.push(neightbor);
+      maze.solution.push(...stack, neightbor);
     }
-    maze.set(neightbor, ' ');
-    maze.set(wall, ' ');
+    maze.setRoad(neightbor);
+    maze.setRoad(wall);
     stack.push(neightbor);
   }
 }
@@ -78,4 +79,3 @@ export const newNeighbors = (maze, x, y) => {
   });
   return neighbors;
 }
-

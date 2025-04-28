@@ -23,19 +23,20 @@ export const handler = async (event) => {
     const saved = await redis.get(id);
     if (saved) {
       return {
-        maze: JSON.parse(saved),
         id,
+        maze: JSON.parse(saved),
       }
     }
   }
 
   const m = maze(width, height);
   dfs(m, m.center());
+  const flat = m.flat();
   id = idgen();
-  redis.set(id, JSON.stringify(m.getGrid()));
+  redis.set(id, JSON.stringify(flat));
   return {
-    maze: m.getGrid(),
     id,
+    maze: flat,
   }
 }
 

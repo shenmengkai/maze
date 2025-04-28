@@ -5,7 +5,7 @@ const API = 'https://u2qsj2h70b.execute-api.ap-northeast-1.amazonaws.com/default
 
 function App() {
   const [maze, setMaze] = useState(null)
-  const [size, setSize] = useState(35)
+  const [size, setSize] = useState(91)
   const [fetchTime, setFetchTime] = useState(null)
   const [paramId, setParamId] = useState(getUrlParam('id'))
 
@@ -92,6 +92,9 @@ const makeClassName = (maze, i, j) => {
   let arr = [];
   if (maze[i][j] === '█') {
     arr.push("wall");
+  }
+  else if (maze[i][j] === '*') {
+    arr.push("path");
   }
   return arr.join(" ");
 };
