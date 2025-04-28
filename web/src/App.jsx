@@ -5,23 +5,50 @@ const API = 'https://u2qsj2h70b.execute-api.ap-northeast-1.amazonaws.com/default
 
 function App() {
   const [maze, setMaze] = useState(null)
-  const [size, setSize] = useState(20)
+  const [size, setSize] = useState(35)
   const [fetchTime, setFetchTime] = useState(null)
+  const [paramId, setParamId] = useState(getUrlParam('id'))
 
   useEffect(() => {
     if (maze === null) {
+      let url = `${API}?s=${size}`
+      if (paramId) {
+        url += `&id=${paramId}`
+      }
+
       setFetchTime(null)
       const startTime = performance.now()
-      fetch(`${API}?s=${size}`)
+      fetch(url)
         .then((response) => response.json())
         .then((data) => {
-          setMaze(data.maze);
           const endTime = performance.now()
           setFetchTime((endTime - startTime).toFixed(2))
+          setMaze(data.maze);
+          if (!paramId) {
+            window.history.pushState({}, '', `?id=${data.id}`)
+          }
         })
         .catch((error) => console.error('Error fetching maze:', error))
     }
   }, [maze])
+
+  useEffect(() => {
+    const onPopState = (e) => {
+      setParamId(getUrlParam('id'))
+      setMaze(null)
+    }
+
+    window.addEventListener('popstate', onPopState);
+
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+    };
+  }, [])
+
+  const handleNewClick = () => {
+    setParamId(null)
+    setMaze(null)
+  }
 
   return (
     <div>
@@ -35,7 +62,7 @@ function App() {
             max="300"
             onChange={(e) => setSize(Number(e.target.value))} />
           <> </>
-          <button onClick={() => setMaze(null)}>Generate New Maze</button>
+          <button onClick={handleNewClick}>Generate New Maze</button>
           <table id="maze">
             <tbody>
               {maze.map((row, i) => (
@@ -54,7 +81,7 @@ function App() {
       ) : (
         <p>Running maze...</p>
       )}
-      {fetchTime && <p>took: {fetchTime} ms</p>}
+      {fetchTime && <sub>in {fetchTime} ms</sub>}
     </div>
   )
 }
@@ -67,4 +94,9 @@ const makeClassName = (maze, i, j) => {
     arr.push("wall");
   }
   return arr.join(" ");
+};
+
+const getUrlParam = (name) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
 };
